@@ -1,0 +1,165 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<html>
+<head>
+<meta charset="utf-8">
+<title>Game Of Life</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="game of life">
+    <meta name="author" content="brad">
+
+<script>
+
+var t5;
+var loadd=function(){
+var x= parseInt(document.getElementById('loadd').style.width)+5;
+document.getElementById('loadd').style.width=x+"%";
+if(x==100)
+	clearTimeout(t5);
+
+}
+
+var timm=function(){
+document.getElementById('content').style.opacity=0.5;
+document.getElementById('content').style.color='transparent';
+document.getElementById('content').style.textShadow=' 0 0 5px rgba(0,0,0,0.5)';
+t5=setInterval('loadd();',250);
+setTimeout('setSize(50,15,500);',4500);
+setTimeout("document.getElementById('loadin').style.display='none';document.getElementById('content').style.opacity=1;document.getElementById('content').style.color='';document.getElementById('content').style.textShadow='';",5500);
+}
+
+</script>
+<link rel="stylesheet" href="css/bootstrap.css">
+<script type="text/javascript" src="js/gameoflife.js"></script>
+</head>
+<body style="padding-top: 60px;padding-bottom: 40px;" onload="timm();">	
+
+<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+
+          </a>
+          <a class="brand" href="#">Conway's Game of Life <small style="font-size:12px">in js</small></a>
+          <div class="nav-collapse">
+            <ul class="nav">
+								<li class="active"><a href="#"><i class="icon-white"></i>The Game</a></li>
+								<li onclick="alert('hold your pizzas, sooon to be added');"><a href="#"><i class="icon-th-list icon-white"> </i> Source Code</a></li>
+								<li><a href="http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"><i class="icon-question-sign icon-white"></i> whats game of life?</a></li>
+								<li><a href="http://twitter.com/ImmaCrazyBrat"><i class="icon-user icon-white"></i> About Author</a></li>
+								<li onclick="alert('well i just thought of that... soon ?:^)');"><a href="#" alt='zzz'><i class="icon-random icon-white"></i> Multiplayer Game</a></li>
+            </ul>
+			 <!-- .nav, .navbar-search, .navbar-form, etc -->
+            <!--<p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>-->
+          </div><!--/.nav-collapse -->
+
+        </div>
+
+    </div>
+</div>
+	
+	<div class="container-fluid" id='game' name='#game'>
+		<div class="row-fluid"> 
+			<div class="span12">
+				<div class="progress progress-striped progress-info active" id='loadin'>
+						<div class="bar" style="width: 0%;" id='loadd'></div>
+				</div>
+
+				<div class="row-fluid" id='content'>
+					<div class="span2">
+						<div class="well">
+							<ul id="hhh0" class="nav nav-tabs nav-stacked">
+								<li onclick="style.display='none';document.getElementById('pause').style.display='inline';run();" id='play' ><button class="btn btn-success" style="width:100%"><i class="icon-play"></i> Run</button></li>
+
+								<li onclick="stop();" id='pause' style="display:none"><button class="btn btn-warning" style="width:100%"><i class="icon-pause"></i> Pause</button></li>
+
+								<li><button class="btn btn-danger" onclick="stopCount();" style="width:100%"><i class="icon-stop"></i> Stop</button></li><br>
+								<li><button class="btn btn-inverse" onclick="clearGrid();" style="width:100%"><i class="icon-remove icon-white"></i> Clear</button></li><br/>
+								<li><button class="btn btn-info" onclick="prev();" style="width:100%" id='previousStep'><i class="icon-step-backward"></i> Prev</button></li>
+								<li><button class="btn btn-info" onclick="stop();nextStep();" style="width:100%"><i class="icon-step-forward"></i> Next</button></li><br/>
+
+								<li><button class="btn " onclick="clearHis();" style="width:100%"><i class="icon-trash"></i> Clear History</button></li><br/>
+								<li style="display:none"><button class="btn">Bug</button></li><br/>
+								<li style="display:none"><button class="btn">Bug</button></li><br/>
+								<li>Generations: <span class="label" id='gen'>0</span></li><br/>
+								<li id="toastClose" style="display:none" onclick="document.getElementById('toast').style.display='none';document.getElementById('toastClose').style.display='none';"><a class="close">&times;</a></li>
+								<li id="toast" style="display:none"><a>History cleared</a></li>
+
+							</ul>
+
+						</div>
+					</div>
+					<div class="span8">
+						<div class="well">
+							<div>
+								<canvas id='canv' width="5" height="5" style="z-index:0;""></canvas>
+							</div>
+
+						</div>
+					</div>
+
+					<div class="span2">
+						<div class="well" style="z-index:2;">
+							<ul class="nav nav-list">
+								<li><a href="#"><i class="icon-cog"></i>Settings</a></li>
+								<li class="nav-header">Grid-Size <small style="font-size:8px;">(no. of cells)</small></li>
+
+								<li><input type="text" class="span1" placeholder="20" disabled="true" id="size"/> 
+								<span class="help-inline" id="sizeedit" onclick="document.getElementById('sizeset').style.display='inline';document.getElementById('sizeedit').style.display='none';document.getElementById('size').disabled=false;" style="cursor:pointer"><a >edit</a></span>
+
+								<span onclick="editValues();" class="help-inline" id="sizeset" style="display:none;cursor:pointer"><a>set</a></span></li>
+								<li style="display:none"><input type="text" class="span1" placeholder="Bug" disabled="true"> </li>
+								
+								<li class="nav-header">Cell-Size <small style="font-size:8px;">(in pixels)</small></li>
+								<li><input type="text" class="span1" placeholder="10" disabled="true" id="cell"/> 
+								<span class="help-inline" id="celledit" onclick="document.getElementById('cellset').style.display='inline';document.getElementById('celledit').style.display='none';document.getElementById('cell').disabled=false;" style="cursor:pointer"><a >edit</a></span>
+
+								<span onclick="editValues();" class="help-inline" id="cellset" style="display:none;cursor:pointer"><a>set</a></span></li>
+
+								<li class="nav-header">speed <small style="font-size:8px;">(in milli-second)</small></li>
+								<li><input type="text" class="span1" placeholder="50" disabled="true" id="speed"/> 
+								<span class="help-inline" id="speededit" onclick="document.getElementById('speedset').style.display='inline';document.getElementById('speededit').style.display='none';document.getElementById('speed').disabled=false;" style="cursor:pointer"><a >edit</a></span>
+								<span onclick="editValues();" class="help-inline" id="speedset" style="display:none;cursor:pointer"><a>set</a></span></li>
+								<li class="nav-header">History <small style="font-size:8px;">(previous moves)</small></li>
+
+								<li><input type="radio" name="history" value="save" checked="true" onclick="changeHisFlag(1);document.getElementById('previousStep').disabled=false;"/>Save <br/>
+
+								<input type="radio" name="history" value="dontsave" onclick="changeHisFlag(0);document.getElementById('previousStep').disabled=true;"/>Dont save</li>
+								<li class="nav-header">Walls <small style="font-size:8px;">(border - edges)</small></li>
+								<li><input type="radio" name="walls" value="recursive" checked="true" onclick="changeRecFlag(0);"/>Recursive <br/>
+								<input type="radio" name="walls" value="solid" onclick="changeRecFlag(1);"/>Solid</li>
+
+							</ul>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</div>
+
+	<hr>
+	  
+
+
+
+      <footer>
+
+        <p><a href="http://mitosis.in/">&copy; <a href="http://mitosis.in/">Mitosis Studios</a></p>
+
+      </footer>
+
+	</div>
+	<div id='source'>
+	</div>
+	<div id='info'>
+	</div>
+
+	<div id='about'>
+	</div>	
+
+</body>
+</html>
